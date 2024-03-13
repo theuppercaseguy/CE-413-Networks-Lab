@@ -1,0 +1,224 @@
+-> en			//privilige mode
+-> config terminal	//global config mode
+-> interface fa0/1	//config-if mode
+-> vlan 2000		//conifg-vlan mode
+-> line vty 0 4		//config-line mode
+
+
+(config) -> hostname khan	//sets a hostname
+
+5-passwords:
+enable password, enalbe secret, line-console, line vty, ssh
+
+1) (config) ->enable password khan		//khan is password
+2) (config) ->enable secret khan		//khan is passwird
+
+3) (config-if) ->line con 0
+   (config-if) ->password khan			//password is khan
+   (config-if) ->login
+
+4) (config-line)-> line vty 0 15
+   (config-line)-> password
+   (config-line)-> login
+
+
+to start an interface:
+(config)-> int fa0/0
+(config-if)-> no shutdown
+
+
+
+Lab # 2:
+
+->en
+-># show running-config			//displays all interface configurations
+-># show startup-config			//
+-># show interface vlan1		//displays vlan1 config, is it up or down
+-># show ip interface vlan1		//same as above i guess
+-># show version			//displays cisco IOS information
+-># show interface fastethernet 0/18	//displays fastethernet specs, isit up or down
+-># show vlan				//displays all interfaces active status
+-># dir flash				//examines flash
+
+-># config term
+->(config)# hostname s1
+->(config)# exit
+-># copy running-config startup-config
+
+configuring switch
+-># config t
+->(config)# hostname s1	
+->(config)# line console 0
+->(config-line)# password cisco		//user access verification to type on CLI
+->(config-line)# login
+->(config-line)# line vty 0 15
+->(config-line)# password cisco
+->(config-line)# login
+->(config-line)# exit
+->(config)# enable secret class		//setup command mode access, asked after entring "en" command/mode
+
+->(config)# vlan 99					//creates a vlan 99 on switch
+->(config-vlan)# exit
+->(config)# interface vlan99				//interface vlan99 is selected
+->(config-if)# ip address 172.17.99.11 255.255.255.0	//ip and subnet is assigned
+->(config-if)# no shutdown
+->(config-if)# exit
+
+->(config)#interface range fa0/1 - 24			//fastethernet 1-24 are selected
+->(config-if-range)# switchport access vlan 99		//assigning switchports to vlan 99
+->(config-if-range)# exit
+
+->(config)# ip default-gateway 172.17.99.1		//setting default gateway ip for the switch
+->(config)# exit	
+
+-># show interface vlan 99
+
+
+-># configure terminal
+->(config)# interface fastethernet 0/18		//interface selected
+->(config-if)# speed 100			//transfer(Mbps) speed selected
+->(config-if)# duplex full			//duplex mode selected
+->(config-if)# end
+
+now pinging will be successfull from pc1 to swithc
+
+-># show interface fastethernet 0/18
+
+
+-># show mac-address-table
+
+
+lab # 3:
+
+Task1:
+
+-># conf t
+->(config)# interface fa0/ 1						//selecting interface to apply port security to
+->(config-if)# switchport mode access					//enabling access mode
+->(config-if)# switchport port-security					//enabling port security
+->(config-if)# switchport port-security mac-address 0002.17bb.1234	//allowing the given mac address only
+->(config-if)# switchport maximum 1					//seeting max allowed mac addrs to 1
+->(config-if)# switchport port-security violation shutdown		//seting violation policy
+->(config-if)# exit							
+->(config)# exit
+
+-># show port-security address						//shows the allowed mac
+-># show port-security interface fa0/1					//shows a specific interface port-secrity details
+
+lab # 4: of submiting of a restraunt
+
+lab # 5:
+
+on all 3 switches:
+
+Switch#config term
+Switch(config)#interface range fa0/1-24
+Switch(config-if-range)#shutdown
+Switch(config-if-range)#interface range gi0/1-2
+Switch(config-if-range)#shutdown
+->exit
+
+do it on all swithces:
+->switch(config)# no ip domain-lookup		//disables DNS lookup
+->switch(config)# enable secret class		//enables passwrod for exec mode
+->switch(config)# line console 0		//selecting console line 0
+->switch(config-line)# password cisco		//setting password as cisco
+->switch(config-line)# login
+->switch(config-line)# line vty 0 15		//selecting vty
+->switch(config-line)# password cisco
+->switch(config-line)# login
+
+->s2(config)# interface range fa0/6, fa0/11, fa0/18	// selecting interfaces
+->s2(config-if-range)# swithcport mode access		//enabling port access
+->s2(config-if-range)# no shutdown
+
+->s3(config)# interface range fa0/6, fa0/11, fa0/18	// selecting interfaces
+->s3(config-if-range)# swithcport mode access		//enabling port access
+->s3(config-if-range)# no shutdown
+
+creating vlans on switch1
+S1(config)#vlan 10
+S1(config-vlan)#name faculty/staff
+S1(config-vlan)#vlan 20
+S1(config-vlan)#name students
+S1(config-vlan)#vlan 30
+S1(config-vlan)#name guest
+S1(config-vlan)#vlan 99
+S1(config-vlan)#name management
+S1(config-vlan)#end
+S1# show vlan brief			//displays vlan
+
+assigning switch ports to vlans on s2 and s3
+S3(config)#interface range fa0/6-10
+S3(config-if-range)#switchport access vlan 30
+S3(config-if-range)#interface range fa0/11-17
+S3(config-if-range)#switchport access vlan 10
+S3(config-if-range)#interface range fa0/18-24
+S3(config-if-range)#switchport access vlan 20
+S3(config-if-range)#end
+S3#copy running-config startup-config
+
+S2(config)#interface range fa0/6-10
+S2(config-if-range)#switchport access vlan 30
+S2(config-if-range)#interface range fa0/11-17
+S2(config-if-range)#switchport access vlan 10
+S2(config-if-range)#interface range fa0/18-24
+S2(config-if-range)#switchport access vlan 20
+S2(config-if-range)#end
+S2#copy running-config startup-config
+
+
+assiging managment vlan on switch 1
+
+S1(config)#interface vlan 99
+S1(config-if)#ip address 172.17.99.11 255.255.255.0
+S1(config-if)#no shutdown
+
+S2(config)#interface vlan 99
+S2(config-if)#ip address 172.17.99.12 255.255.255.0
+S2(config-if)#no shutdown
+
+S3(config)#interface vlan 99
+S3(config-if)#ip address 172.17.99.13 255.255.255.0
+S3(config-if)#no shutdown
+
+
+Trunking:
+
+s1(confg)# interface range fa0/1-5
+s1(config-if-range)# switchport mode trunk
+S1(config-if-range)#switchport trunk native vlan 99
+S1(config-if-range)#no shutdown
+S1(config-if-range)#end
+
+S2(config)# interface range fa0/1-5
+S2(config-if-range)#switchport mode trunk
+S2(config-if-range)#switchport trunk native vlan 99
+S2(config-if-range)#no shutdown
+S2(config-if-range)#end
+
+S3(config)# interface range fa0/1-5
+S3(config-if-range)#switchport mode trunk
+S3(config-if-range)#switchport trunk native vlan 99
+S3(config-if-range)#no shutdown
+
+
+S1#show interface trunk		//checking trunking
+
+pinging:
+
+S1#ping 172.17.99.12
+
+
+Moving pc1 int same vlan as pc2
+S2#configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+S2(config)#interface fastethernet 0/11
+S2(config-if)#switchport access vlan 20
+S2(config-if)#end
+
+
+
+lab 6:
+
+
