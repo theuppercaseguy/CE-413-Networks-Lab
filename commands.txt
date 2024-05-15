@@ -221,4 +221,212 @@ S2(config-if)#end
 
 lab 6:
 
+AFTER MID EXAM:
+
+LAB 07:
+R1(config)#router rip
+R1(config-router)#network 192.168.1.0
+R1(config-router)#network 192.168.2.0
+R1(config-router)#end
+R1#copy run start
+
+R2(config)#router rip
+R2(config-router)#network 192.168.2.0
+R2(config-router)#network 192.168.3.0
+R2(config-router)#network 192.168.4.0
+R2(config-router)#end
+%SYS-5-CONFIG_I: Configured from console by console
+R2#copy run start
+
+R3(config)#router rip
+R3(config-router)#network 192.168.4.0
+R3(config-router)#network 192.168.5.0
+R3(config-router)#end
+%SYS-5-CONFIG_I: Configured from console by console
+R3# copy run start
+
+R1#show ip route
+R2#show ip route
+R3#show ip route
+R1#show ip protocols
+R1#debug ip rip
+R1#undebug all
+
+Scinario B:
+R1(config)#int s0/0/0
+R1(config-if)#ip add 172.30.2.1 255.255.255.0
+R1(config-if)#shutdown
+R1(config-if)#no shutdown
+
+R1(config)#no router rip
+R2(config)#no router rip
+R3(config)#no router rip
+
+R1(config)#router rip
+R1(config-router)#network 172.30.0.0
+R1(config-router)#passive-interface fastethernet 0/0
+R1(config-router)#end
+R1#copy run start
+
+R2(config)#router rip
+R2(config-router)#network 172.30.0.0
+R2(config-router)#network 192.168.4.0
+R2(config-router)#passive-interface fastethernet 0/0
+R2(config-router)#end
+R2#copy run start
+
+R3(config)#router rip
+R3(config-router)#network 192.168.4.0
+R3(config-router)#network 192.168.5.0
+R3(config-router)#passive-interface fastethernet 0/0
+R3(config-router)#end
+R3#copy run start
+
+R1#show ip route
+
+
+LAB 08: OSPF CONFIG
+
+R1(config)#router ospf 1
+R1(config-router)#
+R1(config-router)#network 172.16.1.16 0.0.0.15 area 0
+R1(config-router)#
+R1(config-router)# network 192.168.10.0 0.0.0.3 area 0
+R1(config-router)#
+R1(config-router)#end
+
+R2(config)#router ospf 1
+R2(config-router)#
+R2(config-router)#network 10.10.10.0 0.0.0.255 area 0
+R2(config-router)#network 192.168.10.0 0.0.0.3 area 0
+R2(config-router)#network 192.168.10.8 0.0.0.3 area 0
+R2(config-router)#end
+
+R3(config)#router ospf 1
+R3(config-router)#network 172.16.1.32 0.0.0.7 area 0
+R3(config-router)#network 192.168.10.4 0.0.0.3 area 0
+R3(config-router)#network 192.168.10.8 0.0.0.3 area 0
+R3(config-router)#end
+R3#show ip protocols
+R3#show ip ospf
+R3#show ip ospf interface
+
+
+R1(config)#interface loopback 0
+R1(config-if)#ip address 10.1.1.1 255.255.255.255
+R2(config)#interface loopback 0
+R2(config-if)#ip address 10.2.2.2 255.255.255.255
+R3(config)#interface loopback 0
+R3(config-if)#ip address 10.3.3.3 255.255.255.255
+
+R1#show ip ospf neighbor
+R2#show ip ospf neighbor
+R3#show ip ospf neighbor
+
+R1(config)#router ospf 1
+R1(config-router)#router-id 10.4.4.4
+
+R1#(config-router)#end
+R1# clear ip ospf process
+
+R2#show ip ospf neighbor
+
+R1(config)#router ospf 1
+R1(config-router)#no router-id 10.4.4.4
+
+R1(config-router)#end
+R1# clear ip ospf process
+
+R1#show ip ospf neighbor
+
+
+R1#show ip protocols
+
+R1#show ip route
+
+
+R1 router:
+R1(config)#interface serial0/0/0
+R1(config-if)#bandwidth 64
+R1(config-if)#interface serial0/0/1
+R1(config-if)#bandwidth 64
+
+
+R2 router:
+R2(config)#interface serial0/0/0
+R2(config-if)#bandwidth 64
+R2(config)#interface serial0/0/1
+R2(config-if)#bandwidth 64
+
+R1#show ip ospf interface
+
+
+R3(config)#interface serial0/0/0
+R3(config-if)#ip ospf cost 1562
+R3(config-if)#interface serial0/0/1
+R3(config-if)#ip ospf cost 1562
+
+R3#show ip ospf interface
+
+R1(config)#interface loopback1
+R1(config-if)#ip address 172.30.1.1 255.255.255.252
+R1(config)#ip route 0.0.0.0 0.0.0.0 loopback1
+R1(config)#router ospf 1
+R1(config-router)#default-information originate
+
+LAB 09:
+
+
+LAB 10:
+NAT(config)#ip route 0.0.0.0 0.0.0.0 200.200.100.2
+ISP1(config)#ip route 200.200.100.128 255.255.255.128 200.200.100.1
+NAT(config)#access-list 1 permit 192.168.1.0 0.0.0.255
+NAT(config)#ip nat inside source static 192.168.1.2 200.200.100.252
+NAT(config)#ip nat pool public 200.200.100.129 200.200.100.250 netmask 255.255.255.128
+NAT(config)#ip nat inside source list 1 pool public
+NAT(config)#interface fastethernet 0/0
+NAT(config-if)#ip nat inside
+NAT(config-if)#interface serial 0/0
+NAT(config-if)#ip nat outside
+
+NAT#show ip nat translations
+NAT#show ip nat statistics
+NAT#show ip nat translations verbose
+NAT#clear ip nat translation *
+NAT#show ip nat translations
+
+LAB 11:
+
+R1(config)# ipv6 unicast-routing
+R1(config) interface GigabitEthernet0/0
+R1(config-if) ipv6 address 2001:db8:1:1::1/64
+R1(config-if) ipv6 address FE80::1 link-local
+R1(config-if) no shutdown
+
+R1(config) interface GigabitEthernet0/1
+R1(config-if) ipv6 address 2001:db8:1:2::1/64
+R1(config-if) ipv6 address FE80::1 link-local
+R1(config-if) no shutdown
+
+R1(config-if) interface serial0/0/0
+R1(config-if) ipv6 address 2001:DB8:1:A001::2/64
+R1(config-if) ipv6 address FE80::1 link-local
+R1(config-if) no shutdown
+
+
+OEL:
+R1(config) router rip
+R1(config-router) network 192.168.1.0
+R1(config-router) network 192.168.2.0
+R1(config-router) access-list 1 deny 192.168.2.2
+R1(config) interface G0/0
+exit
+R1(config) access-list 1 permit 192.168.2.3
+R1(config) interface G0/0
+R1(config-if) ip access-group 1 in
+
+
+
+
+
 
